@@ -87,7 +87,7 @@ npm i clean-webpack-plugin --save-dev
 npm i webpack-dev-server cross-env --save-dev
 ```
 
-9. 添加热重载
+9. 配置热重载
 
 在webpack.config.js载入webpack-dev-server中的 HotModuleReplacementPlugin，配置好devServer对象;
 
@@ -111,7 +111,7 @@ npm i webpack-dev-server cross-env --save-dev
 
 项目基础配置就完成了。
 
-### 项目打包优化
+### 项目打包优化（待完善）
 
 
 1. 配置生产环境 css 单独分离打包，方便浏览器缓存
