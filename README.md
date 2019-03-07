@@ -21,11 +21,14 @@ npm i vue --save
 配置完成后的目录
 
 ```
+|-- dist
 |-- src
 |   |-- app.vue      
 |   |-- index.js
 |-- index.html
 |-- package.json
+|-- webpack.config.js
+|-- postcss.config.js
 ```
 
 ### 安装项目依赖
@@ -36,14 +39,6 @@ webpack本身其实直接能处理的只有 js 资源，是通过各种 loader �
 
 ```
 npm i vue-loader webpack webpack-cli --save-dev
-```
-
-package.json 文件的 scripts 属性里添加 build 脚本。
-
-通过 npm run build 来打包项目
-
-```
-"serve": "webpack --config webpack.config.js"
 ```
 
 2. 安装style-loader、css-loader，安装 vue-template-compiler 用于编译模版语法的 template
@@ -84,25 +79,27 @@ npm i html-webpack-plugin --save-dev
 npm i clean-webpack-plugin --save-dev
 ```
 
-8. 配置生产环境 css 单独分离打包，方便浏览器缓存
-
-```
-npm i mini-css-extract-plugin --save-dev
-```
-
-9. 添加 webpack-dev-server，本地服务器跑起来
+8. 添加 webpack-dev-server，本地服务器跑起来
 
 ```
 npm i webpack-dev-server cross-env --save-dev
 ```
 
-配置好webpack和package.json后，用 npm run dev 命令启动一个服务器
+9. 添加热重载
 
-### 配置项目
 
-根目录下新建 webpack.config.js 文件 内容见项目；配置好以上对应的工具。
 
-根目录下新建 ppostcss.config.js 文件 内容见项目；配置postcss-loader。
+接下来配置好webpack.config；在 package.json 文件的 scripts 属性里添加 build 脚本后，就可以，
+
+通过npm run serve 命令启动一个服务器
+
+通过 npm run build 来打包项目
+
+### 修改项目配置文件
+
+根目录下新建 webpack.config.js 文件 内容见项目对应文件；配置好以上对应的工具。
+
+根目录下新建 ppostcss.config.js 文件 内容见项目对应文件；配置postcss-loader。
 
 修改 package.json
 
@@ -110,6 +107,21 @@ npm i webpack-dev-server cross-env --save-dev
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "cross-env NODE_ENV=production webpack --config webpack.config.js",
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.js"
+    "serve": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.js"
   },
 ```
+
+### 项目打包优化
+
+
+1. 配置生产环境 css 单独分离打包，方便浏览器缓存
+
+```
+npm i mini-css-extract-plugin --save-dev
+```
+
+2. 单独打包类库文件
+
+因为类库文件是不用像业务代码一样经常更新的，单独打包可以让它们在浏览器里缓存，提高加载速度。
+
+修改 webpack.config.js

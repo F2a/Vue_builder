@@ -2,13 +2,23 @@ const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const webpack = require('webpack')
 
 module.exports = {
     entry: path.join(__dirname, 'src/index.js'), // 项目总入口js文件
     // 输出文件
     output: {
         path: path.join(__dirname, 'dist'), // 所有的文件都输出到dist/目录下
-        filename: 'bundle.js'
+        filename: 'bundle.js',
+        publicPath: 'http://localhost:8080/dist/'
+    },
+    devServer: {
+        publicPath: '/dist/',
+        contentBase: './',
+        compress: true,
+        port: 8080,
+        hot: true,
+        hotOnly: true
     },
     module: {
         rules: [{
@@ -70,6 +80,8 @@ module.exports = {
             template: 'index.html', // 指定用index.html做模版
             inject: 'body' // 指定插入的<script>标签在body底部
         }),
-       new CleanWebpackPlugin()
+       new CleanWebpackPlugin(), 
+       new webpack.NamedModulesPlugin(), // 当接收到热更新信号时，打印文件模块等信息
+       new webpack.HotModuleReplacementPlugin() // 热更新
     ]
 };
