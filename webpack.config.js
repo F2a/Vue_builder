@@ -10,11 +10,8 @@ module.exports = {
     output: {
         path: path.join(__dirname, 'dist'), // 所有的文件都输出到dist/目录下
         filename: 'bundle.js',
-        publicPath: 'http://localhost:8080/dist/'
     },
     devServer: {
-        publicPath: '/dist/',
-        contentBase: './',
         compress: true,
         port: 8080,
         hot: true,

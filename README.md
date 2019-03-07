@@ -33,13 +33,15 @@ npm i vue --save
 
 ### 安装项目依赖
 
-1. 安装 webpack 和 vue-loader。
+1. 安装 webpack 和 vue-loader
 
 webpack本身其实直接能处理的只有 js 资源，是通过各种 loader 让其他资源可以被 webpack 打包处理的。所以就还要安装 vue-loader。
 
 ```
 npm i vue-loader webpack webpack-cli --save-dev
 ```
+
+新建 webpack.config.js 写好基础配置。
 
 2. 安装style-loader、css-loader，安装 vue-template-compiler 用于编译模版语法的 template
 
@@ -87,19 +89,13 @@ npm i webpack-dev-server cross-env --save-dev
 
 9. 添加热重载
 
-
-
-接下来配置好webpack.config；在 package.json 文件的 scripts 属性里添加 build 脚本后，就可以，
-
-通过npm run serve 命令启动一个服务器
-
-通过 npm run build 来打包项目
+在webpack.config.js载入webpack-dev-server中的 HotModuleReplacementPlugin，配置好devServer对象;
 
 ### 修改项目配置文件
 
-根目录下新建 webpack.config.js 文件 内容见项目对应文件；配置好以上对应的工具。
+在webpack.config.js 文件配置好其余依赖项，内容见项目对应文件；配置好以上对应的工具。
 
-根目录下新建 ppostcss.config.js 文件 内容见项目对应文件；配置postcss-loader。
+根目录下新建 ppostcss.config.js 文件 内容见项目对应文件用来 配置postcss-loader。
 
 修改 package.json
 
@@ -110,6 +106,10 @@ npm i webpack-dev-server cross-env --save-dev
     "serve": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.js"
   },
 ```
+
+这样就可以通过npm run serve 命令启动本地服务器；通过 npm run build 来打包项目；
+
+项目基础配置就完成了。
 
 ### 项目打包优化
 
