@@ -33,6 +33,14 @@ npm i vue --save
 
 ### 安装项目依赖
 
+安装依赖前需要注意一下两个语句的区别
+
+``` --save-dev ``` ：安装好后写入package.json的devDepencies中（开发环境依赖）
+
+ ``` --save ```  ：安装好后写入package.json的dependencies中（生产环境依赖）
+
+ 所以进入生产环境打包还需要对package.json的dependencies进行优化
+
 1. 安装 webpack 和 vue-loader
 
 webpack本身其实直接能处理的只有 js 资源，是通过各种 loader 让其他资源可以被 webpack 打包处理的。所以就还要安装 vue-loader。
