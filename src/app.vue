@@ -14,8 +14,14 @@ import Vue from 'vue'
 import ECharts from 'vue-echarts'
 import 'echarts/lib/chart/pie'
 import 'echarts/lib/chart/bar'
+import 'echarts/lib/chart/scatter'
+import 'echarts/lib/chart/effectScatter'
 import 'echarts/lib/component/tooltip'
+import 'echarts/lib/component/axis'
 import 'echarts/lib/component/dataZoom'
+
+require('echarts');
+require('echarts/extension/bmap/bmap');
 
 import changshaData from './assets/data.json'
 
@@ -32,7 +38,7 @@ export default {
     };
   },
   computed: {
-    CSpie: function (){
+    average: function (){
       return this.changshaData.data.map((val, i) => {
         const re = /^[0-9]+.?[0-9]*/
         if (re.test(val[5])&&re.test(val[6])){
@@ -47,7 +53,7 @@ export default {
       const data = Array(10).fill(0).map((val, i) => {
               return { value: val, name: this.salaryType[i] }
             })
-      this.CSpie.map((val, i) => {
+      this.average.map((val, i) => {
         if(val<1) data[0].value++
         if(val>=1&&val<5) data[1].value++
         if(val>=5&&val<8) data[2].value++
@@ -94,8 +100,9 @@ export default {
     },
     line: function () {
       const sortedData = this.changshaData.data.sort(this.sortData(true));
-      const lineData = this.CSpie.sort(this.sortData(false));
+      const lineData = this.average.sort(this.sortData(false));
       return {
+        color: '#61a0a8',        
         tooltip : {
           trigger: 'axis',
           axisPointer: {
@@ -106,12 +113,17 @@ export default {
           },
           formatter: function (params){
             const i = params[0].dataIndex
-            return `
+            let result =`
               ${sortedData[i][0]} <br />
               ${sortedData[i][1]} <br />
               ${sortedData[i][4]} <br />
-              ${sortedData[i][5]} - ${sortedData[i][6]} K
             `
+            if(sortedData[i][5]){
+              result += `${sortedData[i][5]} - ${sortedData[i][6]}K`
+            }else{
+              result += '面议'
+            }
+            return result
           }
         },
         toolbox: {
@@ -171,6 +183,58 @@ export default {
           },
         ]
       }
+    },
+    scatter: function() {
+      let data = [
+        {name: '海门', value: 9},
+        {name: '鄂尔多斯', value: 12},
+        {name: '招远', value: 12},
+      ]
+      let geoCoordMap = {
+        '海门':[121.15,31.89],
+        '鄂尔多斯':[109.781327,39.608266],
+        '招远':[120.38,37.35],
+      }
+      let convertData = function (data) {
+        var res = [];
+        for (var i = 0; i < data.length; i++) {
+            var geoCoord = geoCoordMap[data[i].name];
+            if (geoCoord) {
+                res.push({
+                    name: data[i].name,
+                    value: geoCoord.concat(data[i].value)
+                });
+            }
+        }
+        return res;
+      };
+      return {
+        title: {
+          text: '薪资地域分布图',
+          subtext: 'data from zhaopin.com',
+          left: 'center'
+        },
+        tooltip : {
+          trigger: 'item'
+        },
+    bmap: {
+        // 百度地图中心经纬度
+        center: [120.13066322374, 30.240018034923],
+        // 百度地图缩放
+        zoom: 14,
+        // 是否开启拖拽缩放，可以只设置 'scale' 或者 'move'
+        roam: true,
+        // 百度地图的自定义样式，见 http://developer.baidu.com/map/jsdevelop-11.htm
+        mapStyle: {}
+    },
+    series: [{
+        type: 'scatter',
+        // 使用百度地图坐标系
+        coordinateSystem: 'bmap',
+        // 数据格式跟在 geo 坐标系上一样，每一项都是 [经度，纬度，数值大小，其它维度...]
+        data: [ [120, 30, 1] ]
+    }]
+      }
     }
   },
   methods: {
@@ -192,7 +256,6 @@ export default {
   },
   created() {
     console.log('在实例创建完成后被立即调用');
-    console.log(this.CSpie)
   },
   beforeMount() {
     console.log('在挂载开始之前被调用');
