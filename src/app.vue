@@ -6,10 +6,15 @@
     <div class="chartBox">
       <v-chart class="charts" :options="line"/>
     </div>
+    <div class="chartBox">
+      <v-chart class="charts" :options="scatter"/>
+    </div>
   </div>
 </template>
 
 <script>
+import changshaData from './assets/data.json'
+
 import Vue from 'vue'
 import ECharts from 'vue-echarts'
 import 'echarts/lib/chart/pie'
@@ -19,11 +24,7 @@ import 'echarts/lib/chart/effectScatter'
 import 'echarts/lib/component/tooltip'
 import 'echarts/lib/component/axis'
 import 'echarts/lib/component/dataZoom'
-
-require('echarts');
-require('echarts/extension/bmap/bmap');
-
-import changshaData from './assets/data.json'
+import 'echarts/extension/bmap/bmap'
 
 export default {
   name: 'Home',
@@ -185,55 +186,279 @@ export default {
       }
     },
     scatter: function() {
-      let data = [
-        {name: '海门', value: 9},
-        {name: '鄂尔多斯', value: 12},
-        {name: '招远', value: 12},
-      ]
-      let geoCoordMap = {
-        '海门':[121.15,31.89],
-        '鄂尔多斯':[109.781327,39.608266],
-        '招远':[120.38,37.35],
-      }
-      let convertData = function (data) {
-        var res = [];
-        for (var i = 0; i < data.length; i++) {
-            var geoCoord = geoCoordMap[data[i].name];
-            if (geoCoord) {
-                res.push({
-                    name: data[i].name,
-                    value: geoCoord.concat(data[i].value)
-                });
-            }
-        }
-        return res;
-      };
+      let dimension = 4;
+      const average = this.average;
+      const mapDatas = changshaData.data.map((val, i) => {
+                  return {
+                    name: val[0],
+                    value: [
+                      Number(val[9]),
+                      Number(val[8]),
+                      val[5]?val[5]:-1,
+                      Number(average[i]),
+                      val[6]?val[6]:-1,
+                    ]
+                  }
+                })
+                console.log(mapDatas)
       return {
+        // 加载 bmap 组件
         title: {
-          text: '薪资地域分布图',
-          subtext: 'data from zhaopin.com',
-          left: 'center'
+            text: '长沙前端工程师薪资地域分布图',
+            textStyle: {
+                color: 'white'
+            },
+            subtext: `数据总数：${changshaData.total}条`,
+            x: 'center'
         },
-        tooltip : {
-          trigger: 'item'
+        bmap: {
+            center: [113, 28.21],
+            zoom: 12,
+            roam: true,
+            mapStyle: {
+                styleJson: [{
+                        "featureType": "land",
+                        "elementType": "all",
+                        "stylers": {
+                            "color": "#073763"
+                        }
+                    },
+                    {
+                        "featureType": "water",
+                        "elementType": "all",
+                        "stylers": {
+                            "color": "#073763",
+                            "lightness": -54
+                        }
+                    },
+                    {
+                        'featureType': 'arterial',
+                        'elementType': 'geometry.fill',
+                        'stylers': {
+                            // 'color': '#ffffff',
+                            "color": "#073763",
+                            // "lightness":-62,
+                        }
+                    },
+                    {
+                        'featureType': 'arterial',
+                        'elementType': 'geometry.stroke',
+                        'stylers': {
+                            'color': '#555555'
+                        }
+                    },
+                    {
+                        "featureType": "highway",
+                        "elementType": "all",
+                        "stylers": {
+                            "color": "#45818e",
+                            'visibility': 'off'
+                        }
+                    },
+                    {
+                        'featureType': 'railway',
+                        'elementType': 'all',
+                        'stylers': {
+                            'visibility': 'off'
+                        }
+                    },
+                    {
+                        'featureType': 'subway',
+                        'elementType': 'geometry',
+                        'stylers': {
+                            'lightness': -70
+                        }
+                    },
+                    {
+                        'featureType': 'building',
+                        'elementType': 'geometry.fill',
+                        'stylers': {
+                            'color': '#000000'
+                        }
+                    },
+                    {
+                        'featureType': 'building',
+                        'elementType': 'geometry',
+                        'stylers': {
+                            'color': '#022338'
+                        }
+                    },
+                    {
+                        'featureType': 'all',
+                        'elementType': 'labels.text.fill',
+                        'stylers': {
+                            'color': '#857f7f'
+                        }
+                    },
+                    {
+                        'featureType': 'all',
+                        'elementType': 'labels.text.stroke',
+                        'stylers': {
+                            'color': '#000000'
+                        }
+                    },
+                    {
+                        "featureType": "boundary",
+                        "elementType": "all",
+                        "stylers": {
+                            "color": "#ffffff",
+                            "lightness": -62,
+                            "visibility": "on"
+                        }
+                    },
+                    {
+                        'featureType': 'green',
+                        'elementType': 'geometry',
+                        'stylers': {
+                            'color': '#062032'
+                        }
+                    },
+                    {
+                        'featureType': 'local',
+                        'elementType': 'geometry',
+                        'stylers': {
+                            'color': '#000000'
+                        }
+                    },
+                    {
+                        'featureType': 'manmade',
+                        'elementType': 'all',
+                        'stylers': {
+                            'color': '#022338'
+                        }
+                    },
+                    {
+                        "featureType": "label",
+                        "elementType": "labels.text.fill",
+                        "stylers": {
+                            "color": "#ffffff",
+                            "visibility": "on"
+                        }
+                    },
+                    {
+                        "featureType": "label",
+                        "elementType": "labels.text.stroke",
+                        "stylers": {
+                            "color": "#444444",
+                            "visibility": "off"
+                        }
+                    },
+                    {
+                        "featureType": "medical",
+                        "elementType": "all",
+                        "stylers": {
+                            "visibility": "off"
+                        }
+                    }
+                ]
+            }
         },
-    bmap: {
-        // 百度地图中心经纬度
-        center: [120.13066322374, 30.240018034923],
-        // 百度地图缩放
-        zoom: 14,
-        // 是否开启拖拽缩放，可以只设置 'scale' 或者 'move'
-        roam: true,
-        // 百度地图的自定义样式，见 http://developer.baidu.com/map/jsdevelop-11.htm
-        mapStyle: {}
-    },
-    series: [{
-        type: 'scatter',
-        // 使用百度地图坐标系
-        coordinateSystem: 'bmap',
-        // 数据格式跟在 geo 坐标系上一样，每一项都是 [经度，纬度，数值大小，其它维度...]
-        data: [ [120, 30, 1] ]
-    }]
+        visualMap: {
+            type: 'piecewise',
+            dimension,
+            pieces: [
+                { max: 0 },
+                { min: 1, max: 5 },
+                { min: 5, max: 8 },
+                { min: 8, max: 10 },
+                { min: 10, max: 13 },
+                { min: 13, max: 16 },
+                { min: 16, max: 20 },
+                { min: 20, max: 25 },
+                { min: 25, max: 30 },
+                { min: 30, max: 40 },
+                { min: 40 }
+            ],
+            calculable: true,
+            itemWidth: 46,
+            itemHeight: 24,
+            left: 20,
+            top: 20,
+            inverse: true,
+            hoverLink: false,
+            inRange: {
+                color: ['#50a3ba', '#eac736', '#d94e5d', 'darkred']
+            },
+            outOfRange: {
+                symbolSize: 0
+            },
+            textStyle: {
+                color: '#fff'
+            },
+            formatter(a, b) {
+                if (a < 0) return '面议';
+                if (b > 40) return '超高薪';
+                return `${a} - ${b}K`;
+            },
+        },
+        series: [{
+            type: 'scatter',
+            coordinateSystem: 'bmap',
+            data: mapDatas,
+            symbolSize: function(data, params) {
+              const i = params.dataIndex
+              if (average[i]&&average[i]>=0) {
+                return average[i] / 3 + 10;
+              }
+            },
+            label: {
+              emphasis: {
+                show: true,
+                formatter: function(param) {
+                    return param.data[0];
+                },
+                position: 'top',
+                fontSize: 18,
+                fontWeight: 'bold',
+                color: 'white'
+              }
+            },
+            itemStyle: {
+                normal: {
+                    shadowBlur: 10,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)',
+                    shadowOffsetY: 0,
+                }
+            }
+        }],
+        tooltip: {
+            trigger: 'item',
+            triggerOn: 'click',
+            padding: [10, 20, 10, 20],
+            backgroundColor: 'rgba(144,152,160,0.7)',
+            borderColor: '#ccc',
+            borderWidth: 2,
+            borderRadius: 4,
+            transitionDuration: 0,
+            extraCssText: 'width: 320px;',
+            textStyle: {
+                fontSize: 14
+            },
+            position: {
+                right: 60,
+                bottom: 20
+            },
+            enterable: true,
+            hideDelay: 1000,
+            formatter(params) {
+                let data = params.data;
+                let template = '';
+                const makeTemplate = (key, value) => {
+                    template += `<li><span>${key}</span>：${value}</li>`;
+                };
+                makeTemplate('名称', data[0]);
+                makeTemplate('规模', data[1]);
+                makeTemplate('职位', data[7]);
+                makeTemplate('年限', data[4]);
+                makeTemplate('薪资', data[5] ? data[5] + ' - ' + data[6] + 'K' : '面议');
+                makeTemplate('市区', data[10] + ' ' + data[11]);
+                makeTemplate('发布时间', data[12]);
+                makeTemplate('公司链接', `<a target="_blank" href="${data[2]}">${data[2]}</a>`);
+                makeTemplate('招聘链接', `<a target="_blank" href="${data[3]}">${data[3]}</a>`);
+                template = `<ul class="template">${template}</ul>`;
+                return template;
+            }
+        },
       }
     }
   },
