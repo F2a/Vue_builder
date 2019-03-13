@@ -7,7 +7,7 @@
       <v-chart class="charts" :options="line"/>
     </div>
     <div class="chartBox">
-      <v-chart class="charts" :options="scatter"/>
+      <v-chart style="height: 500px" class="charts" :options="scatter"/>
     </div>
   </div>
 </template>
@@ -68,8 +68,8 @@ export default {
       })
       return {   
         title : {
-          text: '分布',
-          subtext: '纯属虚构',
+          text: '长沙前端工程师薪资分布图',
+          subtext: `数据总数：${changshaData.total}条`,
           x:'center'
         },
         tooltip : {
@@ -103,7 +103,12 @@ export default {
       const sortedData = this.changshaData.data.sort(this.sortData(true));
       const lineData = this.average.sort(this.sortData(false));
       return {
-        color: '#61a0a8',        
+        color: ['#61a0a8','#006699'],   
+        title : {
+          text: '长沙前端工程师薪资分布图',
+          subtext: `数据总数：${changshaData.total}条`,
+          x:'center'
+        },     
         tooltip : {
           trigger: 'axis',
           axisPointer: {
@@ -131,15 +136,14 @@ export default {
           show : true,
           feature : {
             mark : {show: true},
-            dataView : {show: true, readOnly: false},
             magicType: {show: true, type: ['line', 'bar']},
-            restore : {show: true},
             saveAsImage : {show: true}
           }
         },
         calculable : true,
         legend: {
-          itemGap: 5
+          itemGap: 5,
+          left: '1%'
         },
         grid: {
           top: '12%',
@@ -167,21 +171,27 @@ export default {
         dataZoom: [
           {
             show: true,
-            start: 94,
+            start: 90,
             end: 100
           },
           {
             type: 'inside',
-            start: 94,
+            start: 90,
             end: 100
           },
         ],
         series : [
           {
-            name: '柱状图排序',
+            barGap: 0,
+            name: '薪资下限',
             type: 'bar',
-            data: lineData
+            data: sortedData.map(val => val[5]||0)
           },
+          {
+            name: '薪资上限',
+            type: 'bar',
+            data: sortedData.map(val => val[6]||0)
+          }
         ]
       }
     },
@@ -423,14 +433,13 @@ export default {
         }],
         tooltip: {
             trigger: 'item',
-            triggerOn: 'click',
             padding: [10, 20, 10, 20],
             backgroundColor: 'rgba(144,152,160,0.7)',
             borderColor: '#ccc',
             borderWidth: 2,
             borderRadius: 4,
             transitionDuration: 0,
-            extraCssText: 'width: 320px;',
+            extraCssText: 'width: 300px;',
             textStyle: {
                 fontSize: 14
             },
@@ -439,9 +448,10 @@ export default {
                 bottom: 20
             },
             enterable: true,
-            hideDelay: 1000,
+            hideDelay: 500,
             formatter(params) {
-                let data = params.data;
+                let data = changshaData.data[params.dataIndex];
+                console.log(params)
                 let template = '';
                 const makeTemplate = (key, value) => {
                     template += `<li><span>${key}</span>：${value}</li>`;
@@ -530,5 +540,19 @@ export default {
 }
 .charts{
   width: 100%;
+}
+.template {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+.template li {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 3px 0;
+}
+.template span {
+    color: #efea85;
 }
 </style>
