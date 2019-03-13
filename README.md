@@ -111,11 +111,11 @@ npm i webpack-dev-server cross-env --save-dev
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "cross-env NODE_ENV=production webpack --config webpack.config.js",
-    "serve": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.js"
+    "start": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.js"
   },
 ```
 
-这样就可以通过npm run serve 命令启动本地服务器；通过 npm run build 来打包项目；
+这样就可以通过npm run start 命令启动本地服务器；通过 npm run build 来打包项目；
 
 项目基础配置就完成了。
 
