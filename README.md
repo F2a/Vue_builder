@@ -1,4 +1,4 @@
-# chart_zhaopin
+# Vue_builder
 
 No vue-cli，从零开始搭建项目架构。
 
