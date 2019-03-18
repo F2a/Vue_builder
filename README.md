@@ -33,13 +33,13 @@ npm i vue --save
 
 ### 安装项目依赖
 
-安装依赖前需要注意一下两个语句的区别
+安装依赖前需要注意一下两个语句的区别：
 
-``` --save-dev ``` ：安装好后写入package.json的devDepencies中（开发环境依赖）
+``` --save-dev ``` ：安装好后写入package.json的devDepencies中（开发环境依赖）；
 
- ``` --save ```  ：安装好后写入package.json的dependencies中（生产环境依赖）
+ ``` --save ```  ：安装好后写入package.json的dependencies中（生产环境依赖）；
 
- 所以进入生产环境打包还需要对package.json的dependencies进行优化
+ 所以真实开发肯定要对开发环境和生产环境的配置做区分。
 
 1. 安装 webpack 和 vue-loader
 
