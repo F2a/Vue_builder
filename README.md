@@ -39,7 +39,7 @@ npm i vue --save
 
  ``` --save ```  ：安装好后写入package.json的dependencies中（生产环境依赖）；
 
- 所以真实开发肯定要对开发环境和生产环境的配置做区分。
+真实开发肯定要对开发环境和生产环境的配置做跟深层的区分配置， 所以该项目仅做参考。
 
 1. 安装 webpack 和 vue-loader
 
